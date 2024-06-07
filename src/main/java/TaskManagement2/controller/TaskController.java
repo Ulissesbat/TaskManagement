@@ -1,4 +1,4 @@
-package desafio.example.dasafio.controller;
+package TaskManagement2.controller;
 
 import java.net.URI;
 
@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import desafio.example.dasafio.dto.TaskDTO;
-import desafio.example.dasafio.services.TaskService;
+import TaskManagement2.dto.TaskDTO;
+import TaskManagement2.services.TaskService;
 
 @RestController
 @RequestMapping("/tasks")
