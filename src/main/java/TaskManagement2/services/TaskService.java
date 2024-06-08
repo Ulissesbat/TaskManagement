@@ -1,5 +1,9 @@
 package TaskManagement2.services;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import TaskManagement2.dto.TaskDTO;
 import TaskManagement2.entitities.Task;
 import TaskManagement2.repositories.TaskRepository;
+import exception.ResourceNotFoundException;
 
 @Service
 public class TaskService {
@@ -40,6 +45,36 @@ public class TaskService {
 		entity = repository.save(entity);
 		return new TaskDTO(entity);
 	}
+	
+	public void delet (Long id) {
+		repository.deleteById(id);
+	}
+	
+	@Transactional(readOnly = true)
+	public TaskDTO findById(Long id) {
+		Optional<Task> result = repository.findById(id);
+		if (result.isPresent()) {
+	        return new TaskDTO(result.get());
+	    } else {
+	        throw new ResourceNotFoundException("Task not found with id: " + id);
+	    }
+
+	}
+	
+	@Transactional(readOnly = true)
+    public List<TaskDTO> findByFilters(String status, String priority) {
+        List<Task> tasks;
+        if (status != null && priority != null) {
+            tasks = repository.findByStatusAndPriority(status, priority);
+        } else if (status != null) {
+            tasks = repository.findByStatus(status);
+        } else if (priority != null) {
+            tasks = repository.findByPriority(priority);
+        } else {
+            tasks = repository.findAll();
+        }
+        return tasks.stream().map(TaskDTO::new).collect(Collectors.toList());
+    }
 	
 	 private void setTaskProperties(Task entity, TaskDTO dto) {
 		 
